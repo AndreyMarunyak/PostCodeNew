@@ -16,6 +16,10 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.zebra.postcodenew.model.PostcodeResponse;
+
 public class MainActivity extends AppCompatActivity implements Callback {
 
     private static final String[] PERMISSIONS = {Manifest.permission.INTERNET};
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
     String sample;
     HttpRequest request = new HttpRequest();
     private TextView textView;
+    private Parser parser = new Parser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements Callback {
             ActivityCompat.requestPermissions(this, PERMISSIONS, REQUEST_CODE);
         } else {
             request.sendRequest(this);
+
         }
     }
 
@@ -55,10 +61,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
     @Override
     public void onResponse(Call call, Response response) throws IOException {
         sample = response.body().string();
+        final PostcodeResponse postcodeResponse = parser.getParsedResponse(sample);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textView.setText(sample);
+                textView.setText(postcodeResponse.toString());
             }
         });
     }
@@ -67,6 +74,11 @@ public class MainActivity extends AppCompatActivity implements Callback {
     public void onFailure(Call call, IOException e) {
         textView.setText("FAILURE");
     }
+
+     GsonBuilder builder = new GsonBuilder();
+     Gson gson = builder.create();
+     Parser parsedResponse = gson.fromJson(sample, Parser.class);
+
 
 }
 

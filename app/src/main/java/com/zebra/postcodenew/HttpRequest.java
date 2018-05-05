@@ -7,7 +7,7 @@ import okhttp3.Request;
 
 public class HttpRequest {
 
-    private float longitude = -20.1812f;
+    private float longitude = -0.1812f;
     private float latitude = 51.5258f;
 
     OkHttpClient client = new OkHttpClient();

@@ -22,12 +22,16 @@ import com.zebra.postcodenew.model.PostcodeResponse;
 
 public class MainActivity extends AppCompatActivity implements Callback {
 
-    private static final String[] PERMISSIONS = {Manifest.permission.INTERNET};
+    private static final String[] PERMISSIONS = {Manifest.permission.INTERNET, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private static final int REQUEST_CODE = 1337;
     String sample;
     HttpRequest request = new HttpRequest();
     private TextView textView;
     private Parser parser = new Parser();
+    private LocationChecker locationChecker;
+    private String postcode;
+    private double latitude;
+    private double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,9 @@ public class MainActivity extends AppCompatActivity implements Callback {
             ActivityCompat.requestPermissions(this, PERMISSIONS, REQUEST_CODE);
         } else {
             request.sendRequest(this);
-
+            locationChecker = new LocationChecker(MainActivity.this);
+            latitude = locationChecker.getLatitude();
+            longitude = locationChecker.getLongitude();
         }
     }
 
@@ -62,10 +68,13 @@ public class MainActivity extends AppCompatActivity implements Callback {
     public void onResponse(Call call, Response response) throws IOException {
         sample = response.body().string();
         final PostcodeResponse postcodeResponse = parser.getParsedResponse(sample);
+        if (postcodeResponse.result != null && !postcodeResponse.result.isEmpty()){
+            postcode = postcodeResponse.result.get(0).postcode;
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textView.setText(postcodeResponse.toString());
+                textView.setText(postcode + " long: " + longitude + " lat:" + latitude);
             }
         });
     }

@@ -84,9 +84,9 @@ public class MainActivity extends AppCompatActivity implements Callback {
         textView.setText("FAILURE");
     }
 
-     GsonBuilder builder = new GsonBuilder();
-     Gson gson = builder.create();
-     Parser parsedResponse = gson.fromJson(sample, Parser.class);
+//     GsonBuilder builder = new GsonBuilder();
+//     Gson gson = builder.create();
+//     Parser parsedResponse = gson.fromJson(sample, Parser.class);
 
 
 }
